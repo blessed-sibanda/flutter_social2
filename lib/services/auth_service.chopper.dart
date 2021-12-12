@@ -17,26 +17,36 @@ class _$AuthService extends AuthService {
   final definitionType = AuthService;
 
   @override
-  Future<Response<APIUser>> signUp(String name, String email, String password) {
+  Future<Response<Map<String, dynamic>>> signUp(SignUpData data) {
     final $url = 'api/signup';
-    final $body = <String, dynamic>{
-      'user[name]': name,
-      'user[email]': email,
-      'user[password]': password
-    };
+    final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
-    return client.send<APIUser, APIUser>($request);
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
 
   @override
-  Future<Response<APIUser>> signIn(String email, String password) {
+  Future<Response<Map<String, dynamic>>> signIn(SignInData data) {
     final $url = 'api/login';
-    final $body = <String, dynamic>{
-      'user[email]': email,
-      'user[password]': password
-    };
+    final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
-    return client.send<APIUser, APIUser>($request,
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request,
         responseConverter: AuthService.authResponseConverter);
+  }
+
+  @override
+  Future<Response<Map<String, dynamic>>> resendConfirmationEmail(
+      EmailData data) {
+    final $url = 'confirmation';
+    final $body = <String, dynamic>{'user': data};
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
+  }
+
+  @override
+  Future<Response<Map<String, dynamic>>> requestPasswordReset(EmailData data) {
+    final $url = 'password';
+    final $body = <String, dynamic>{'user': data};
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
 }

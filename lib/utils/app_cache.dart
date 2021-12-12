@@ -20,6 +20,7 @@ class AppCache {
 
   Future<bool> isUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey(kAuthToken);
+    return prefs.containsKey(kAuthToken) &&
+        prefs.getString(kAuthToken)!.isNotEmpty;
   }
 }
