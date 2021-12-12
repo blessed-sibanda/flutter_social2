@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/auth.dart';
@@ -43,8 +44,8 @@ class _EmailActionDialogState extends State<EmailActionDialog> {
       case EmailAction.resetPassword:
         _title = 'Request Password Reset';
         _body = 'An email with a reset password token has been sent '
-            'to the provided email adress. Copy the reset-password-token '
-            'and use it to reset your password';
+            'to the provided email adress. Click on the link in the'
+            ' email to activate change your password';
         break;
       default:
     }
@@ -138,16 +139,6 @@ class _EmailActionDialogState extends State<EmailActionDialog> {
                   child: const Text('Ok'),
                   onPressed: () {
                     Navigator.pop(context);
-                    switch (widget.emailAction) {
-                      case EmailAction.resendConfirmation:
-                        Provider.of<AuthScreenProvider>(context, listen: false)
-                            .goToSignIn();
-                        break;
-                      case EmailAction.resetPassword:
-                        // go to new-password page
-                        break;
-                      default:
-                    }
                   },
                 ),
               ],

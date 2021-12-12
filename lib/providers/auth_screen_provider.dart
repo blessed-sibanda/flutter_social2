@@ -1,17 +1,19 @@
 import 'package:flutter/foundation.dart';
 
-class AuthScreenProvider extends ChangeNotifier {
-  bool _onSignInPage = true;
+enum AuthScreenPage { signIn, signUp }
 
-  bool get onSignInPage => _onSignInPage;
+class AuthScreenProvider extends ChangeNotifier {
+  AuthScreenPage _currentPage = AuthScreenPage.signIn;
+
+  AuthScreenPage get currentPage => _currentPage;
 
   void goToSignUp() {
-    _onSignInPage = false;
+    _currentPage = AuthScreenPage.signUp;
     notifyListeners();
   }
 
   void goToSignIn() {
-    _onSignInPage = true;
+    _currentPage = AuthScreenPage.signIn;
     notifyListeners();
   }
 }

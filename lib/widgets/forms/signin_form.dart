@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/providers/app_provider.dart';
@@ -65,7 +66,7 @@ class _SignInFormState extends State<SignInForm> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        child: const Text('Sign-up'),
+                        child: const Text('Sign-up instead'),
                         onPressed: () {
                           Provider.of<AuthScreenProvider>(context,
                                   listen: false)
@@ -91,16 +92,11 @@ class _SignInFormState extends State<SignInForm> {
                 Expanded(
                   flex: 3,
                   child: TextButton(
-                    child: Text(
-                      'Resend email confirmation',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: Colors.grey,
-                          ),
-                    ),
+                    child: greyText('Resend email confirmation', context),
                     onPressed: () async {
                       await _showEmailActionDialog(
                         EmailAction.resendConfirmation,
+                        context,
                       );
                     },
                   ),
@@ -108,15 +104,12 @@ class _SignInFormState extends State<SignInForm> {
                 Expanded(
                   flex: 2,
                   child: TextButton(
-                    child: Text(
-                      'Forgot Password?',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: Colors.grey,
-                          ),
-                    ),
+                    child: greyText('Forgot Password?', context),
                     onPressed: () async {
-                      await _showEmailActionDialog(EmailAction.resetPassword);
+                      await _showEmailActionDialog(
+                        EmailAction.resetPassword,
+                        context,
+                      );
                     },
                   ),
                 )
@@ -128,6 +121,16 @@ class _SignInFormState extends State<SignInForm> {
     );
   }
 
+  Text greyText(String text, BuildContext context) {
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+            color: Colors.grey,
+          ),
+    );
+  }
+
   void _signIn() async {
     if (_formStateKey.currentState!.validate()) {
       final data = SignInData(
@@ -135,9 +138,10 @@ class _SignInFormState extends State<SignInForm> {
         password: _passwordController.text,
       );
 
-      final response = await _authService.signIn(data);
+      Response<dynamic> response = await _authService.signIn(data);
 
       if (response.isSuccessful) {
+        setState(() => _error = '');
         Provider.of<AppProvider>(context, listen: false).logIn();
       } else {
         Map<String, dynamic> jsonBody = json.decode(response.bodyString);
@@ -148,7 +152,8 @@ class _SignInFormState extends State<SignInForm> {
     }
   }
 
-  Future<void> _showEmailActionDialog(EmailAction emailAction) async {
+  Future<void> _showEmailActionDialog(
+      EmailAction emailAction, BuildContext context) async {
     return showDialog(
       context: context,
       barrierDismissible: false,

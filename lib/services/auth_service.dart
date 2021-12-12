@@ -9,25 +9,30 @@ part "auth_service.chopper.dart";
 
 @ChopperApi()
 abstract class AuthService extends ChopperService {
-  @Post(path: 'api/signup')
+  @Post(path: 'api/signup.json')
   Future<Response<Map<String, dynamic>>> signUp(
     @Field('user') SignUpData data,
   );
 
-  @Post(path: 'api/login')
+  @Post(path: 'api/login.json')
   @FactoryConverter(response: authResponseConverter)
-  Future<Response<Map<String, dynamic>>> signIn(
+  Future<Response<dynamic>> signIn(
     @Field('user') SignInData data,
   );
 
-  @Post(path: 'confirmation')
+  @Post(path: 'confirmation.json')
   Future<Response<Map<String, dynamic>>> resendConfirmationEmail(
     @Field('user') EmailData data,
   );
 
-  @Post(path: 'password')
+  @Post(path: 'password.json')
   Future<Response<Map<String, dynamic>>> requestPasswordReset(
     @Field('user') EmailData data,
+  );
+
+  @Patch(path: 'password.json')
+  Future<Response<Map<String, dynamic>>> resetPassword(
+    @Field('user') ResetPasswordData data,
   );
 
   static AuthService create() {

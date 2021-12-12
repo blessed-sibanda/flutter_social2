@@ -18,25 +18,25 @@ class _$AuthService extends AuthService {
 
   @override
   Future<Response<Map<String, dynamic>>> signUp(SignUpData data) {
-    final $url = 'api/signup';
+    final $url = 'api/signup.json';
     final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
 
   @override
-  Future<Response<Map<String, dynamic>>> signIn(SignInData data) {
-    final $url = 'api/login';
+  Future<Response<dynamic>> signIn(SignInData data) {
+    final $url = 'api/login.json';
     final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
-    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request,
+    return client.send<dynamic, dynamic>($request,
         responseConverter: AuthService.authResponseConverter);
   }
 
   @override
   Future<Response<Map<String, dynamic>>> resendConfirmationEmail(
       EmailData data) {
-    final $url = 'confirmation';
+    final $url = 'confirmation.json';
     final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
@@ -44,9 +44,17 @@ class _$AuthService extends AuthService {
 
   @override
   Future<Response<Map<String, dynamic>>> requestPasswordReset(EmailData data) {
-    final $url = 'password';
+    final $url = 'password.json';
     final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
+  }
+
+  @override
+  Future<Response<Map<String, dynamic>>> resetPassword(ResetPasswordData data) {
+    final $url = 'password.json';
+    final $body = <String, dynamic>{'user': data};
+    final $request = Request('PATCH', $url, client.baseUrl, body: $body);
     return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
 }
