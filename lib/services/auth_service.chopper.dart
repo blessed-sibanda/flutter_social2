@@ -49,12 +49,4 @@ class _$AuthService extends AuthService {
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
   }
-
-  @override
-  Future<Response<Map<String, dynamic>>> resetPassword(ResetPasswordData data) {
-    final $url = 'password.json';
-    final $body = <String, dynamic>{'user': data};
-    final $request = Request('PATCH', $url, client.baseUrl, body: $body);
-    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
-  }
 }

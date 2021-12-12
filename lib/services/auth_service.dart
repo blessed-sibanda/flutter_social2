@@ -30,11 +30,6 @@ abstract class AuthService extends ChopperService {
     @Field('user') EmailData data,
   );
 
-  @Patch(path: 'password.json')
-  Future<Response<Map<String, dynamic>>> resetPassword(
-    @Field('user') ResetPasswordData data,
-  );
-
   static AuthService create() {
     final client = ChopperClient(
       baseUrl: ServiceUtils.kBaseUrl,
