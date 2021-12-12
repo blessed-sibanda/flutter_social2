@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'pagination_model.dart';
+import 'pagination.dart';
 
-part 'user_model.g.dart';
+part 'user.g.dart';
 
 @JsonSerializable()
 class APIUser {
