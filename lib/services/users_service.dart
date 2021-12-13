@@ -12,6 +12,14 @@ abstract class UsersService extends ChopperService {
   @FactoryConverter(response: userListResponseConverter)
   Future<Response<APIUserList>> getPeopleToFollow({@Query() int page = 1});
 
+  @Get(path: '{id}/followers.json')
+  @FactoryConverter(response: userListResponseConverter)
+  Future<Response<APIUserList>> getFollowers({@Query() int page = 1});
+
+  @Get(path: '{id}/following.json')
+  @FactoryConverter(response: userListResponseConverter)
+  Future<Response<APIUserList>> getFollowing({@Query() int page = 1});
+
   @Get(path: '{id}')
   @FactoryConverter(response: userResponseConverter)
   Future<Response<APIUser>> getUser(@Path() int id);

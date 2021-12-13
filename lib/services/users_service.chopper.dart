@@ -26,6 +26,24 @@ class _$UsersService extends UsersService {
   }
 
   @override
+  Future<Response<APIUserList>> getFollowers({int page = 1}) {
+    final $url = 'users/{id}/followers.json';
+    final $params = <String, dynamic>{'page': page};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<APIUserList, APIUserList>($request,
+        responseConverter: UsersService.userListResponseConverter);
+  }
+
+  @override
+  Future<Response<APIUserList>> getFollowing({int page = 1}) {
+    final $url = 'users/{id}/following.json';
+    final $params = <String, dynamic>{'page': page};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<APIUserList, APIUserList>($request,
+        responseConverter: UsersService.userListResponseConverter);
+  }
+
+  @override
   Future<Response<APIUser>> getUser(int id) {
     final $url = 'users/${id}';
     final $request = Request('GET', $url, client.baseUrl);
