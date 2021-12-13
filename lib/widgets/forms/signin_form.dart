@@ -144,10 +144,7 @@ class _SignInFormState extends State<SignInForm> {
         setState(() => _error = '');
         Provider.of<AppProvider>(context, listen: false).logIn();
       } else {
-        Map<String, dynamic> jsonBody = json.decode(response.bodyString);
-        if (jsonBody.containsKey('error')) {
-          setState(() => _error = jsonBody['error']);
-        }
+        setState(() => _error = response.error.toString());
       }
     }
   }
