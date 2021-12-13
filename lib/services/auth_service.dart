@@ -4,6 +4,7 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/services/service_utils.dart';
 import 'package:flutter_social/utils/app_cache.dart';
+import 'package:http/http.dart' as http;
 
 part "auth_service.chopper.dart";
 
@@ -12,6 +13,14 @@ abstract class AuthService extends ChopperService {
   @Post(path: 'api/signup.json')
   Future<Response<Map<String, dynamic>>> signUp(
     @Field('user') SignUpData data,
+  );
+
+  @Put(path: 'api/signup.json')
+  @multipart
+  @FactoryConverter(request: updateUserRequestConverter)
+  Future<Response<Map<String, dynamic>>> updateUser(
+    @Field('user') UpdateUserData data,
+    @Field('image_path') String? imagePath,
   );
 
   @Post(path: 'api/login')
@@ -61,5 +70,18 @@ abstract class AuthService extends ChopperService {
     headers[contentTypeKey] = jsonHeaders;
     headers['Accept'] = '*/*';
     return request.copyWith(headers: headers, body: jsonEncode(request.body));
+  }
+
+  static FutureOr<Request> updateUserRequestConverter(Request request) async {
+    var newRequest =
+        http.MultipartRequest(request.method, Uri.parse(request.url));
+    final String? imagePath = newRequest.fields['image_path'];
+    if (imagePath != null) {
+      newRequest.files.add(
+        await http.MultipartFile.fromPath('user[avatar_image]', imagePath),
+      );
+      newRequest.headers['Accept'] = '*/*';
+    }
+    return newRequest as Request;
   }
 }

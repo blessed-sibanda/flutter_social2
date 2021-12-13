@@ -52,6 +52,14 @@ class _$UsersService extends UsersService {
   }
 
   @override
+  Future<Response<APIUser>> getMyProfile() {
+    final $url = 'users/me.json';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<APIUser, APIUser>($request,
+        responseConverter: UsersService.userResponseConverter);
+  }
+
+  @override
   Future<Response<bool>> isFollowing(int id) {
     final $url = 'users/${id}/is_following.json';
     final $request = Request('GET', $url, client.baseUrl);

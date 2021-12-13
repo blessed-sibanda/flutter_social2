@@ -25,6 +25,16 @@ class _$AuthService extends AuthService {
   }
 
   @override
+  Future<Response<Map<String, dynamic>>> updateUser(
+      UpdateUserData data, String? imagePath) {
+    final $url = 'api/signup.json';
+    final $body = <String, dynamic>{'user': data, 'image_path': imagePath};
+    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request,
+        requestConverter: AuthService.updateUserRequestConverter);
+  }
+
+  @override
   Future<Response<dynamic>> signIn(SignInData data) {
     final $url = 'api/login';
     final $body = <String, dynamic>{'user': data};

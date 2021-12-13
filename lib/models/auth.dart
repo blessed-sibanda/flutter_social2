@@ -33,6 +33,32 @@ class SignUpData {
       };
 }
 
+class UpdateUserData {
+  final String name;
+  final String email;
+  final String? password;
+  final String currentPassword;
+
+  UpdateUserData({
+    required this.name,
+    required this.email,
+    required this.currentPassword,
+    this.password,
+  });
+
+  Map<String, String> toJson() {
+    final mapData = {
+      'name': name,
+      'email': email,
+      'current_password': currentPassword,
+    };
+    if (password != null && password!.isNotEmpty) {
+      mapData['password'] = password!;
+    }
+    return mapData;
+  }
+}
+
 class EmailData {
   final String email;
 
