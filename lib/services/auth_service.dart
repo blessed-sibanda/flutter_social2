@@ -49,7 +49,10 @@ abstract class AuthService extends ChopperService {
   static FutureOr<Response> authResponseConverter(Response response) {
     final _appCache = AppCache();
     String token = response.headers['authorization'] ?? '';
-    if (token.isNotEmpty) _appCache.saveAuthToken(token);
+    if (token.isNotEmpty) {
+      _appCache.saveAuthToken(token);
+      _appCache.saveUserId(jsonDecode(response.body)['id']);
+    }
     return response;
   }
 

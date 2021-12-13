@@ -142,7 +142,7 @@ class _SignInFormState extends State<SignInForm> {
 
       if (response.isSuccessful) {
         setState(() => _error = '');
-        Provider.of<AppProvider>(context, listen: false).logIn();
+        await Provider.of<AppProvider>(context, listen: false).logIn();
       } else {
         setState(() => _error = response.error.toString());
       }

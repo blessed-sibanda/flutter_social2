@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'pagination.dart';
 
@@ -31,6 +32,13 @@ class APIUser {
       _$APIUserFromJson(json);
 
   Map<String, dynamic> toJson() => _$APIUserToJson(this);
+
+  String get joinedAt {
+    DateTime localCreated = createdAt.toLocal();
+    final formatted =
+        '${DateFormat.yMMMd().format(localCreated)} - ${DateFormat.Hm().format(localCreated)}';
+    return formatted;
+  }
 }
 
 @JsonSerializable()

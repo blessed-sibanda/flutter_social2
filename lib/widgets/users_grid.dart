@@ -39,18 +39,28 @@ class _UsersGridState extends State<UsersGrid> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userId =
+        Provider.of<AppProvider>(context, listen: false).selectedUserId;
     return FutureBuilder(
       future: widget.relationship == Relationship.followers
-          ? _usersService.getFollowers(page: _currentPage)
-          : _usersService.getFollowing(page: _currentPage),
+          ? _usersService.getFollowers(userId, page: _currentPage)
+          : _usersService.getFollowing(userId, page: _currentPage),
       builder: (BuildContext context,
           AsyncSnapshot<Response<APIUserList>> snapshot) {
         if (snapshot.hasData) {
           final data = snapshot.data!.body!;
-
           _totalPages = data.meta.totalPages;
-          _users.addAll(data.users);
+          for (final user in data.users) {
+            if (!_users.contains(user)) _users.add(user);
+          }
+
           return Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: GridView.builder(
@@ -64,7 +74,7 @@ class _UsersGridState extends State<UsersGrid> {
                   onTap: () {
                     Navigator.pop(context);
                     Provider.of<AppProvider>(context, listen: false)
-                        .goToProfile(userId: user.id);
+                        .goToProfile(user.id);
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -73,7 +83,7 @@ class _UsersGridState extends State<UsersGrid> {
                       CircleAvatar(
                         radius: 30,
                         backgroundImage: user.avatarUrl == null
-                            ? const AssetImage('assets/user.png')
+                            ? const AssetImage('assets/images/user.png')
                                 as ImageProvider
                             : NetworkImage(user.avatarUrl!),
                         foregroundColor: Colors.grey.shade200,

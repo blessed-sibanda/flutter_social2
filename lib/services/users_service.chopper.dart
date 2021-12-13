@@ -26,8 +26,8 @@ class _$UsersService extends UsersService {
   }
 
   @override
-  Future<Response<APIUserList>> getFollowers({int page = 1}) {
-    final $url = 'users/{id}/followers.json';
+  Future<Response<APIUserList>> getFollowers(int id, {int page = 1}) {
+    final $url = 'users/${id}/followers.json';
     final $params = <String, dynamic>{'page': page};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<APIUserList, APIUserList>($request,
@@ -35,8 +35,8 @@ class _$UsersService extends UsersService {
   }
 
   @override
-  Future<Response<APIUserList>> getFollowing({int page = 1}) {
-    final $url = 'users/{id}/following.json';
+  Future<Response<APIUserList>> getFollowing(int id, {int page = 1}) {
+    final $url = 'users/${id}/following.json';
     final $params = <String, dynamic>{'page': page};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<APIUserList, APIUserList>($request,
@@ -45,18 +45,18 @@ class _$UsersService extends UsersService {
 
   @override
   Future<Response<APIUser>> getUser(int id) {
-    final $url = 'users/${id}';
+    final $url = 'users/${id}.json';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<APIUser, APIUser>($request,
         responseConverter: UsersService.userResponseConverter);
   }
 
   @override
-  Future<Response<APIUser>> getMyProfile() {
-    final $url = 'users/me';
+  Future<Response<bool>> isFollowing(int id) {
+    final $url = 'users/${id}/is_following.json';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<APIUser, APIUser>($request,
-        responseConverter: UsersService.userResponseConverter);
+    return client.send<bool, bool>($request,
+        responseConverter: UsersService.isFollowingResponseConverter);
   }
 
   @override

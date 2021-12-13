@@ -12,11 +12,13 @@ class AppProvider extends ChangeNotifier {
   bool _onPeople = false;
   int _selectedUser = -1;
   bool _editingUser = false;
+  int _currentUserId = -1;
 
   bool get isInitialized => _initialized;
   bool get isLoggedIn => _loggedIn;
-  int get selectedUser => _selectedUser;
+  int get selectedUserId => _selectedUser;
   bool get editingUser => _editingUser;
+  int get currentUserId => _currentUserId;
 
   bool get didSelectUser => _didSelectUser;
   bool get onPeople => _onPeople;
@@ -26,6 +28,7 @@ class AppProvider extends ChangeNotifier {
     _onPeople = false;
     _editingUser = false;
     _selectedUser = -1;
+    _currentUserId = -1;
   }
 
   void initializeApp() async {
@@ -36,7 +39,7 @@ class AppProvider extends ChangeNotifier {
     });
   }
 
-  void logIn() async {
+  Future<void> logIn() async {
     _loggedIn = await _appCache.isUserLoggedIn();
     notifyListeners();
   }
@@ -54,11 +57,11 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void goToProfile({int userId = -1}) {
-    // if userId = -1, it means the user is on his/her own profile
+  void goToProfile([int? userId]) async {
     _reset();
     _didSelectUser = true;
-    _selectedUser = userId;
+    _currentUserId = await _appCache.currentUserId();
+    _selectedUser = (userId == null) ? _currentUserId : userId;
     notifyListeners();
   }
 

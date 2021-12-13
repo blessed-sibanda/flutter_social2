@@ -3,6 +3,7 @@ import 'package:flutter_social/navigation/app_paths.dart';
 import 'package:flutter_social/navigation/app_link.dart';
 import 'package:flutter_social/screens/auth_screen.dart';
 // import 'package:flutter_social/screens/edit_user_screen.dart';
+import 'package:flutter_social/screens/user_profile_screen.dart';
 import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/screens/people_screen.dart';
 import 'package:flutter_social/screens/splash_screen.dart';
@@ -37,11 +38,11 @@ class AppRouter extends RouterDelegate<AppLink>
           AuthScreen.page,
         if (appProvider.isInitialized && appProvider.isLoggedIn)
           HomeScreen.page,
-        // if (appProvider.isInitialized &&
-        //     appProvider.isLoggedIn &&
-        //     appProvider.didSelectUser &&
-        //     !appProvider.editingUser)
-        //   UserProfileScreen.page,
+        if (appProvider.isInitialized &&
+            appProvider.isLoggedIn &&
+            appProvider.didSelectUser &&
+            !appProvider.editingUser)
+          UserProfileScreen.page,
         // if (appProvider.isInitialized &&
         //     appProvider.isLoggedIn &&
         //     appProvider.editingUser)
@@ -75,7 +76,7 @@ class AppRouter extends RouterDelegate<AppLink>
         if (configuration.userId == null) {
           appProvider.goToProfile();
         } else {
-          appProvider.goToProfile(userId: configuration.userId!);
+          appProvider.goToProfile(configuration.userId!);
         }
         break;
       case AppPaths.userEditPath:
@@ -98,7 +99,7 @@ class AppRouter extends RouterDelegate<AppLink>
     } else if (appProvider.didSelectUser) {
       return AppLink(
         location: AppPaths.userPath,
-        userId: appProvider.selectedUser,
+        userId: appProvider.selectedUserId,
       );
     } else if (appProvider.onPeople) {
       return AppLink(location: AppPaths.peoplePath);

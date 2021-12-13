@@ -14,19 +14,21 @@ abstract class UsersService extends ChopperService {
 
   @Get(path: '{id}/followers.json')
   @FactoryConverter(response: userListResponseConverter)
-  Future<Response<APIUserList>> getFollowers({@Query() int page = 1});
+  Future<Response<APIUserList>> getFollowers(@Path() int id,
+      {@Query() int page = 1});
 
   @Get(path: '{id}/following.json')
   @FactoryConverter(response: userListResponseConverter)
-  Future<Response<APIUserList>> getFollowing({@Query() int page = 1});
+  Future<Response<APIUserList>> getFollowing(@Path() int id,
+      {@Query() int page = 1});
 
-  @Get(path: '{id}')
+  @Get(path: '{id}.json')
   @FactoryConverter(response: userResponseConverter)
   Future<Response<APIUser>> getUser(@Path() int id);
 
-  @Get(path: 'me')
-  @FactoryConverter(response: userResponseConverter)
-  Future<Response<APIUser>> getMyProfile();
+  @Get(path: '{id}/is_following.json')
+  @FactoryConverter(response: isFollowingResponseConverter)
+  Future<Response<bool>> isFollowing(@Path() int id);
 
   @Put(path: '{id}/follow', optionalBody: true)
   Future<Response> followUser(@Path() int id);
@@ -58,6 +60,13 @@ abstract class UsersService extends ChopperService {
     var body = response.body;
     final mapData = json.decode(body);
     final data = APIUser.fromJson(mapData);
+    return response.copyWith(body: data);
+  }
+
+  static FutureOr<Response> isFollowingResponseConverter(Response response) {
+    var body = response.body;
+    final mapData = json.decode(body);
+    final data = mapData['result'];
     return response.copyWith(body: data);
   }
 }

@@ -89,8 +89,7 @@ class _WhoToFollowState extends State<WhoToFollow> {
   }
 
   void _goToUserProfile(APIUser user) =>
-      Provider.of<AppProvider>(context, listen: false)
-          .goToProfile(userId: user.id);
+      Provider.of<AppProvider>(context, listen: false).goToProfile(user.id);
 
   Widget _buildUserTile(BuildContext context, APIUser user) {
     return Padding(
