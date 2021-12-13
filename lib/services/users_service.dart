@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_social/models/user.dart';
 import 'service_utils.dart';
@@ -6,14 +8,23 @@ part 'users_service.chopper.dart';
 
 @ChopperApi(baseUrl: 'users/')
 abstract class UsersService extends ChopperService {
-  @Get(path: 'people')
+  @Get(path: 'people.json')
+  @FactoryConverter(response: userListResponseConverter)
   Future<Response<APIUserList>> getPeopleToFollow({@Query() int page = 1});
 
   @Get(path: '{id}')
+  @FactoryConverter(response: userResponseConverter)
   Future<Response<APIUser>> getUser(@Path() int id);
 
   @Get(path: 'me')
+  @FactoryConverter(response: userResponseConverter)
   Future<Response<APIUser>> getMyProfile();
+
+  @Put(path: '{id}/follow', optionalBody: true)
+  Future<Response> followUser(@Path() int id);
+
+  @Put(path: '{id}/unfollow', optionalBody: true)
+  Future<Response> unfollowUser(@Path() int id);
 
   static UsersService create() {
     final client = ChopperClient(
@@ -26,5 +37,19 @@ abstract class UsersService extends ChopperService {
       ],
     );
     return _$UsersService(client);
+  }
+
+  static FutureOr<Response> userListResponseConverter(Response response) {
+    var body = response.body;
+    final mapData = json.decode(body);
+    final data = APIUserList.fromJson(mapData);
+    return response.copyWith(body: data);
+  }
+
+  static FutureOr<Response> userResponseConverter(Response response) {
+    var body = response.body;
+    final mapData = json.decode(body);
+    final data = APIUser.fromJson(mapData);
+    return response.copyWith(body: data);
   }
 }

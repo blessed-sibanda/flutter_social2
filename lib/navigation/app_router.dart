@@ -3,8 +3,8 @@ import 'package:flutter_social/navigation/app_paths.dart';
 import 'package:flutter_social/navigation/app_link.dart';
 import 'package:flutter_social/screens/auth_screen.dart';
 // import 'package:flutter_social/screens/edit_user_screen.dart';
-// import 'package:flutter_social/screens/home_screen.dart';
-// import 'package:flutter_social/screens/people_screen.dart';
+import 'package:flutter_social/screens/home_screen.dart';
+import 'package:flutter_social/screens/people_screen.dart';
 import 'package:flutter_social/screens/splash_screen.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 
@@ -36,9 +36,7 @@ class AppRouter extends RouterDelegate<AppLink>
         if (appProvider.isInitialized && !appProvider.isLoggedIn)
           AuthScreen.page,
         if (appProvider.isInitialized && appProvider.isLoggedIn)
-          AuthScreen.page,
-        // if (appProvider.isInitialized && appProvider.isLoggedIn)
-        //   HomeScreen.page,
+          HomeScreen.page,
         // if (appProvider.isInitialized &&
         //     appProvider.isLoggedIn &&
         //     appProvider.didSelectUser &&
@@ -48,10 +46,10 @@ class AppRouter extends RouterDelegate<AppLink>
         //     appProvider.isLoggedIn &&
         //     appProvider.editingUser)
         //   EditUserScreen.page,
-        // if (appProvider.isInitialized &&
-        //     appProvider.isLoggedIn &&
-        //     appProvider.onPeople)
-        //   PeopleScreen.page,
+        if (appProvider.isInitialized &&
+            appProvider.isLoggedIn &&
+            appProvider.onPeople)
+          PeopleScreen.page,
       ],
     );
   }

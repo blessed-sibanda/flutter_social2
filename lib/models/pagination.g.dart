@@ -30,6 +30,8 @@ APIPaginationMetaData _$APIPaginationMetaDataFromJson(
       perPage: json['per_page'] as int,
       count: json['count'] as int,
       totalCount: json['total_count'] as int,
+      totalPages: json['total_pages'] as int,
+      currentPage: json['current_page'] as int,
     );
 
 Map<String, dynamic> _$APIPaginationMetaDataToJson(
@@ -38,4 +40,6 @@ Map<String, dynamic> _$APIPaginationMetaDataToJson(
       'per_page': instance.perPage,
       'count': instance.count,
       'total_count': instance.totalCount,
+      'total_pages': instance.totalPages,
+      'current_page': instance.currentPage,
     };

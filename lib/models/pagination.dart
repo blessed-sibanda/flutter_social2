@@ -43,10 +43,18 @@ class APIPaginationMetaData {
   @JsonKey(name: 'total_count')
   int totalCount;
 
+  @JsonKey(name: 'total_pages')
+  int totalPages;
+
+  @JsonKey(name: 'current_page')
+  int currentPage;
+
   APIPaginationMetaData({
     required this.perPage,
     required this.count,
     required this.totalCount,
+    required this.totalPages,
+    required this.currentPage,
   });
 
   factory APIPaginationMetaData.fromJson(Map<String, dynamic> json) =>

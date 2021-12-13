@@ -18,23 +18,40 @@ class _$UsersService extends UsersService {
 
   @override
   Future<Response<APIUserList>> getPeopleToFollow({int page = 1}) {
-    final $url = 'users/people';
+    final $url = 'users/people.json';
     final $params = <String, dynamic>{'page': page};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
-    return client.send<APIUserList, APIUserList>($request);
+    return client.send<APIUserList, APIUserList>($request,
+        responseConverter: UsersService.userListResponseConverter);
   }
 
   @override
   Future<Response<APIUser>> getUser(int id) {
     final $url = 'users/${id}';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<APIUser, APIUser>($request);
+    return client.send<APIUser, APIUser>($request,
+        responseConverter: UsersService.userResponseConverter);
   }
 
   @override
   Future<Response<APIUser>> getMyProfile() {
     final $url = 'users/me';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<APIUser, APIUser>($request);
+    return client.send<APIUser, APIUser>($request,
+        responseConverter: UsersService.userResponseConverter);
+  }
+
+  @override
+  Future<Response<dynamic>> followUser(int id) {
+    final $url = 'users/${id}/follow';
+    final $request = Request('PUT', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> unfollowUser(int id) {
+    final $url = 'users/${id}/unfollow';
+    final $request = Request('PUT', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 }

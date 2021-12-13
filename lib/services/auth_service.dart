@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/services/service_utils.dart';
@@ -14,8 +14,11 @@ abstract class AuthService extends ChopperService {
     @Field('user') SignUpData data,
   );
 
-  @Post(path: 'api/login.json')
-  @FactoryConverter(response: authResponseConverter)
+  @Post(path: 'api/login')
+  @FactoryConverter(
+    response: authResponseConverter,
+    request: authRequestConverter,
+  )
   Future<Response<dynamic>> signIn(
     @Field('user') SignInData data,
   );
@@ -48,5 +51,12 @@ abstract class AuthService extends ChopperService {
     String token = response.headers['authorization'] ?? '';
     if (token.isNotEmpty) _appCache.saveAuthToken(token);
     return response;
+  }
+
+  static FutureOr<Request> authRequestConverter(Request request) {
+    final headers = Map<String, String>.from(request.headers);
+    headers[contentTypeKey] = jsonHeaders;
+    headers['Accept'] = '*/*';
+    return request.copyWith(headers: headers, body: jsonEncode(request.body));
   }
 }

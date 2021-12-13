@@ -26,10 +26,11 @@ class _$AuthService extends AuthService {
 
   @override
   Future<Response<dynamic>> signIn(SignInData data) {
-    final $url = 'api/login.json';
+    final $url = 'api/login';
     final $body = <String, dynamic>{'user': data};
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request,
+        requestConverter: AuthService.authRequestConverter,
         responseConverter: AuthService.authResponseConverter);
   }
 

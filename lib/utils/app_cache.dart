@@ -5,7 +5,7 @@ class AppCache {
 
   Future<void> saveAuthToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(kAuthToken, "Bearer $token");
+    await prefs.setString(kAuthToken, token);
   }
 
   Future<String> authToken() async {
