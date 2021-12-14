@@ -86,7 +86,7 @@ class _EditUserFormState extends State<EditUserForm> {
                             radius: 50,
                             backgroundImage: _image == null
                                 ? _user!.avatarUrl == null
-                                    ? const AssetImage('assets/user.png')
+                                    ? const AssetImage('assets/images/user.png')
                                         as ImageProvider
                                     : NetworkImage(_user!.avatarUrl!)
                                 : (kIsWeb
