@@ -73,102 +73,112 @@ class _EditUserFormState extends State<EditUserForm> {
               create: (_) => _currentPasswordProvider,
               child:
                   Consumer<CurrentPasswordProvider>(builder: (context, _, __) {
-                return FormWrapper(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextUtils.cardHeaderText(context, 'Edit Profile'),
-                      const Divider(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundImage: _image == null
-                                ? _user!.avatarUrl == null
-                                    ? const AssetImage('assets/images/user.png')
-                                        as ImageProvider
-                                    : NetworkImage(_user!.avatarUrl!)
-                                : (kIsWeb
-                                    ? NetworkImage(_image!.path)
-                                    : FileImage(File(_image!.path))
-                                        as ImageProvider),
-                            foregroundColor: Colors.grey.shade200,
-                            backgroundColor: Colors.transparent,
-                          ),
-                          const SizedBox(height: 5.0),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (!kIsWeb)
-                                IconButton(
-                                    onPressed: () async {
-                                      var image = await ImagePicker.platform
-                                          .pickImage(
-                                              source: ImageSource.camera);
-                                      setState(() => _image = image);
-                                    },
-                                    color: Theme.of(context).primaryColor,
-                                    tooltip: 'Take Photo',
-                                    icon:
-                                        const Icon(Icons.camera_alt_outlined)),
-                              IconButton(
-                                  onPressed: () async {
-                                    var image = await ImagePicker.platform
-                                        .pickImage(source: ImageSource.gallery);
-                                    setState(() => _image = image);
-                                  },
-                                  color: Theme.of(context).primaryColor,
-                                  tooltip: 'Select Image',
-                                  icon: const Icon(Icons.image)),
-                            ],
-                          )
-                        ],
-                      ),
-                      if (_error.isNotEmpty)
-                        Text(_error, style: const TextStyle(color: Colors.red)),
-                      TextInputField(
-                          label: 'Name', controller: _nameController),
-                      TextInputField(
-                        label: 'About',
-                        controller: _aboutController,
-                        multiLine: true,
-                        validator: (_) {},
-                      ),
-                      EmailInputField(emailController: _emailController),
-                      PasswordInputField(
-                        controller: _currentPasswordController,
-                        currentPasswordValidation: true,
-                        label: 'Current Password',
-                      ),
-                      PasswordInputField(
-                        label: 'Password',
-                        controller: _passwordController,
-                        allowBlank: true,
-                      ),
-                      const SizedBox(height: 20.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            child: const Text('Cancel'),
-                            onPressed: () =>
-                                Provider.of<AppProvider>(context, listen: false)
-                                    .goToProfile(),
-                          ),
-                          const SizedBox(width: 20.0),
-                          ElevatedButton(
-                            child: const Text('Update User'),
-                            onPressed: _updateUser,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                return _buildForm(context);
               }),
             ),
           );
+  }
+
+  Widget _buildForm(BuildContext context) {
+    return FormWrapper(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextUtils.cardHeaderText(context, 'Edit Profile'),
+          const Divider(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildUserAvatarImage(),
+              const SizedBox(height: 5.0),
+              _buildUploadIconButtons(context)
+            ],
+          ),
+          if (_error.isNotEmpty)
+            Text(_error, style: const TextStyle(color: Colors.red)),
+          TextInputField(label: 'Name', controller: _nameController),
+          TextInputField(
+            label: 'About',
+            controller: _aboutController,
+            multiLine: true,
+            validator: (_) {},
+          ),
+          EmailInputField(emailController: _emailController),
+          PasswordInputField(
+            controller: _currentPasswordController,
+            currentPasswordValidation: true,
+            label: 'Current Password',
+          ),
+          PasswordInputField(
+            label: 'Password',
+            controller: _passwordController,
+            allowBlank: true,
+          ),
+          const SizedBox(height: 20.0),
+          _buildFormActionButtons(context),
+        ],
+      ),
+    );
+  }
+
+  Row _buildFormActionButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        ElevatedButton(
+          child: const Text('Cancel'),
+          onPressed: () =>
+              Provider.of<AppProvider>(context, listen: false).goToProfile(),
+        ),
+        const SizedBox(width: 20.0),
+        ElevatedButton(
+          child: const Text('Update User'),
+          onPressed: _updateUser,
+        ),
+      ],
+    );
+  }
+
+  CircleAvatar _buildUserAvatarImage() {
+    return CircleAvatar(
+      radius: 50,
+      backgroundImage: _image == null
+          ? _user!.avatarUrl == null
+              ? const AssetImage('assets/images/user.png') as ImageProvider
+              : NetworkImage(_user!.avatarUrl!)
+          : (kIsWeb
+              ? NetworkImage(_image!.path)
+              : FileImage(File(_image!.path)) as ImageProvider),
+      foregroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  Widget _buildUploadIconButtons(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!kIsWeb)
+          IconButton(
+              onPressed: () async {
+                var image = await ImagePicker.platform
+                    .pickImage(source: ImageSource.camera);
+                setState(() => _image = image);
+              },
+              color: Theme.of(context).primaryColor,
+              tooltip: 'Take Photo',
+              icon: const Icon(Icons.camera_alt_outlined)),
+        IconButton(
+            onPressed: () async {
+              var image = await ImagePicker.platform
+                  .pickImage(source: ImageSource.gallery);
+              setState(() => _image = image);
+            },
+            color: Theme.of(context).primaryColor,
+            tooltip: 'Select Image',
+            icon: const Icon(Icons.image)),
+      ],
+    );
   }
 
   String? get _imagePath {
