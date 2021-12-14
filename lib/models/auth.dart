@@ -37,12 +37,14 @@ class UpdateUserData {
   final String name;
   final String email;
   final String? password;
+  final String about;
   final String currentPassword;
 
   UpdateUserData({
     required this.name,
     required this.email,
     required this.currentPassword,
+    required this.about,
     this.password,
   });
 

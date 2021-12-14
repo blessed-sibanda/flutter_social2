@@ -17,11 +17,9 @@ abstract class AuthService extends ChopperService {
 
   @Put(path: 'api/signup.json')
   @multipart
-  @FactoryConverter(request: updateUserRequestConverter)
   Future<Response<Map<String, dynamic>>> updateUser(
-    @Field('user') UpdateUserData data,
-    @Field('image_path') String? imagePath,
-  );
+      @Field('user') UpdateUserData data,
+      [@PartFile('user[avatar_image]') List<int>? bytes]);
 
   @Post(path: 'api/login')
   @FactoryConverter(
@@ -70,18 +68,5 @@ abstract class AuthService extends ChopperService {
     headers[contentTypeKey] = jsonHeaders;
     headers['Accept'] = '*/*';
     return request.copyWith(headers: headers, body: jsonEncode(request.body));
-  }
-
-  static FutureOr<Request> updateUserRequestConverter(Request request) async {
-    var newRequest =
-        http.MultipartRequest(request.method, Uri.parse(request.url));
-    final String? imagePath = newRequest.fields['image_path'];
-    if (imagePath != null) {
-      newRequest.files.add(
-        await http.MultipartFile.fromPath('user[avatar_image]', imagePath),
-      );
-      newRequest.headers['Accept'] = '*/*';
-    }
-    return newRequest as Request;
   }
 }

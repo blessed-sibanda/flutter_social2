@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
+import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/models/user.dart';
+import 'package:flutter_social/utils/app_cache.dart';
 import 'service_utils.dart';
+import 'package:http/http.dart' as http;
 
 part 'users_service.chopper.dart';
 
@@ -51,6 +54,31 @@ abstract class UsersService extends ChopperService {
       ],
     );
     return _$UsersService(client);
+  }
+
+  Future<http.StreamedResponse> updateUser(
+      UpdateUserData user, String? imagePath) async {
+    var url = Uri.parse('${ServiceUtils.kBaseUrl}/api/signup');
+    var request = http.MultipartRequest('PUT', url);
+    request.fields['user[name]'] = user.name;
+    request.fields['user[email]'] = user.email;
+    request.fields['user[about]'] = user.about;
+    request.fields['user[current_password]'] = user.currentPassword;
+    if (user.password != null) {
+      request.fields['user[password]'] = user.password!;
+    }
+    if (imagePath != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'user[avatar_image]',
+          imagePath,
+        ),
+      );
+    }
+    request.headers['Authorization'] = await AppCache().authToken();
+    request.headers['Accept'] = "*/*";
+    var response = await request.send();
+    return response;
   }
 
   static FutureOr<Response> userListResponseConverter(Response response) {

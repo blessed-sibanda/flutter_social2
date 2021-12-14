@@ -1,5 +1,5 @@
-import 'package:flutter_social/providers/current_password_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_social/providers/current_password_provider.dart';
 import 'form_validators.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +51,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
       ),
       validator: (value) => widget.currentPasswordValidation &&
               Provider.of<CurrentPasswordProvider>(context, listen: false)
-                  .isInvalid
+                  .isInvalid()
           ? '${widget.label} is invalid'
           : FormValidators.userPasswordField(
               value,

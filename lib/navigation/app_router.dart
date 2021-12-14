@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_social/navigation/app_paths.dart';
 import 'package:flutter_social/navigation/app_link.dart';
 import 'package:flutter_social/screens/auth_screen.dart';
-// import 'package:flutter_social/screens/edit_user_screen.dart';
+import 'package:flutter_social/screens/edit_user_screen.dart';
 import 'package:flutter_social/screens/user_profile_screen.dart';
 import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/screens/people_screen.dart';
@@ -43,10 +43,10 @@ class AppRouter extends RouterDelegate<AppLink>
             appProvider.didSelectUser &&
             !appProvider.editingUser)
           UserProfileScreen.page,
-        // if (appProvider.isInitialized &&
-        //     appProvider.isLoggedIn &&
-        //     appProvider.editingUser)
-        //   EditUserScreen.page,
+        if (appProvider.isInitialized &&
+            appProvider.isLoggedIn &&
+            appProvider.editingUser)
+          EditUserScreen.page,
         if (appProvider.isInitialized &&
             appProvider.isLoggedIn &&
             appProvider.onPeople)

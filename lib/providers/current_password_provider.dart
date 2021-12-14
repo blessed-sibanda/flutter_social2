@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 
 class CurrentPasswordProvider extends ChangeNotifier {
-  bool _valid = true;
+  bool _inValid = false;
 
-  bool get isInvalid => !_valid;
+  bool isInvalid() => _inValid;
 
   void invalidate() {
-    _valid = false;
+    _inValid = true;
     notifyListeners();
   }
 
   void validate() {
-    _valid = true;
+    _inValid = false;
     notifyListeners();
   }
 }
