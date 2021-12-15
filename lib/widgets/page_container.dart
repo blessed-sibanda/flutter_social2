@@ -9,10 +9,12 @@ class PageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      appBar: const PreferredSize(
-        child: FlutterSocialAppBar(),
-        preferredSize: Size.fromHeight(56.0),
+      key: _scaffoldKey,
+      appBar: PreferredSize(
+        child: FlutterSocialAppBar(_scaffoldKey),
+        preferredSize: const Size.fromHeight(56.0),
       ),
       drawer: ScreenSize.isSmall(context) ? const AppDrawer() : null,
       body: SafeArea(

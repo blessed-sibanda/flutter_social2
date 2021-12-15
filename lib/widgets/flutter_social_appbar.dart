@@ -3,17 +3,9 @@ import 'package:flutter_social/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 
-class MenuItems {
-  static const people = 'People';
-  static const myProfile = 'Profile';
-  static const signOut = 'Sign Out';
-
-  static List<String> get smallScreen => [people, myProfile, signOut];
-  static List<String> get bigScreen => [myProfile, signOut];
-}
-
 class FlutterSocialAppBar extends StatefulWidget {
-  const FlutterSocialAppBar({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const FlutterSocialAppBar(this.scaffoldKey, {Key? key}) : super(key: key);
 
   @override
   State<FlutterSocialAppBar> createState() => _FlutterSocialAppBarState();
@@ -24,7 +16,10 @@ class _FlutterSocialAppBarState extends State<FlutterSocialAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text('Flutter Social'),
+      automaticallyImplyLeading: false,
       actions: [
+        if (ScreenSize.isSmall(context))
+          IconButton(onPressed: _openDrawer, icon: const Icon(Icons.menu)),
         if (!ScreenSize.isSmall(context))
           InkWell(
             child: _buildMenuButton(icon: Icons.home, label: 'Home'),
@@ -48,6 +43,10 @@ class _FlutterSocialAppBarState extends State<FlutterSocialAppBar> {
           ),
       ],
     );
+  }
+
+  void _openDrawer() {
+    widget.scaffoldKey.currentState!.openDrawer();
   }
 
   Widget _buildMenuButton({required String label, IconData? icon}) {

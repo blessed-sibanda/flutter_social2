@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
+import 'package:flutter_social/utils/screen_size.dart';
+import 'package:flutter_social/widgets/improved_scrolling_wrapper.dart';
 import 'package:provider/provider.dart';
 
 enum Relationship { followers, following }
@@ -61,40 +63,49 @@ class _UsersGridState extends State<UsersGrid> {
             if (!_users.contains(user)) _users.add(user);
           }
 
+          int numColumns = (ScreenSize.isSmall(context) &&
+                  MediaQuery.of(context).orientation == Orientation.portrait)
+              ? 3
+              : 4;
+
           return Padding(
             padding: const EdgeInsets.only(top: 20.0),
-            child: GridView.builder(
-              controller: _scrollController,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3),
-              itemCount: _users.length,
-              itemBuilder: (BuildContext context, int index) {
-                final user = _users[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Provider.of<AppProvider>(context, listen: false)
-                        .goToProfile(user.id);
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: user.avatarUrl == null
-                            ? const AssetImage('assets/images/user.png')
-                                as ImageProvider
-                            : NetworkImage(user.avatarUrl!),
-                        foregroundColor: Colors.grey.shade200,
-                        backgroundColor: Colors.transparent,
-                      ),
-                      const SizedBox(height: 13.0),
-                      Text(user.name, textAlign: TextAlign.center),
-                    ],
-                  ),
-                );
-              },
+            child: ImprovedScrollingWrapper(
+              scrollController: _scrollController,
+              child: GridView.builder(
+                controller: _scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: numColumns,
+                ),
+                itemCount: _users.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final user = _users[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Provider.of<AppProvider>(context, listen: false)
+                          .goToProfile(user.id);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: user.avatarUrl == null
+                              ? const AssetImage('assets/images/user.png')
+                                  as ImageProvider
+                              : NetworkImage(user.avatarUrl!),
+                          foregroundColor: Colors.grey.shade200,
+                          backgroundColor: Colors.transparent,
+                        ),
+                        const SizedBox(height: 13.0),
+                        Text(user.name, textAlign: TextAlign.center),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           );
         } else if (snapshot.hasError) {

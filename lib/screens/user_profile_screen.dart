@@ -16,36 +16,41 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: SizedBox(
-        width: 450.0,
-        child: Card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextUtils.cardHeaderText(context, 'Profile'),
-              const SizedBox(height: 15.0),
-              const UserInfo(),
-              const SizedBox(height: 15.0),
-              const TabBar(
-                labelColor: Colors.black54,
-                tabs: [
-                  Tab(text: 'Posts'),
-                  Tab(text: 'Following'),
-                  Tab(text: 'Followers'),
+    return SingleChildScrollView(
+      child: DefaultTabController(
+        length: 3,
+        child: Expanded(
+          child: SizedBox(
+            width: 550.0,
+            height: MediaQuery.of(context).size.height,
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextUtils.cardHeaderText(context, 'Profile'),
+                  const SizedBox(height: 15.0),
+                  const UserInfo(),
+                  const SizedBox(height: 15.0),
+                  const TabBar(
+                    labelColor: Colors.black54,
+                    tabs: [
+                      Tab(text: 'Posts'),
+                      Tab(text: 'Following'),
+                      Tab(text: 'Followers'),
+                    ],
+                  ),
+                  const Expanded(
+                    child: TabBarView(
+                      children: [
+                        Icon(Icons.directions_car),
+                        UsersGrid(Relationship.following),
+                        UsersGrid(Relationship.followers),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              const Expanded(
-                child: TabBarView(
-                  children: [
-                    Icon(Icons.directions_car),
-                    UsersGrid(Relationship.following),
-                    UsersGrid(Relationship.followers),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
