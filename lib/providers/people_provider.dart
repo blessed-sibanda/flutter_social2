@@ -13,11 +13,17 @@ class PeopleProvider extends ChangeNotifier {
         _whoToFollow.add(user);
       }
     }
+    _whoToFollow.sort((a, b) => a.id.compareTo(b.id));
     notifyListeners();
   }
 
   void removePerson(APIUser user) {
     _whoToFollow.remove(user);
+    notifyListeners();
+  }
+
+  void clearList() {
+    _whoToFollow.clear();
     notifyListeners();
   }
 }

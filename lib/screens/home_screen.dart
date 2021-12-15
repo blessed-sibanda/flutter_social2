@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   static get page => const MaterialPage(
         child: HomeScreen(),
         name: AppPaths.homePath,
-        key: ValueKey(AppPaths.homePath),
+        // key: ValueKey(AppPaths.homePath),
       );
 
   @override

@@ -28,7 +28,6 @@ class AppProvider extends ChangeNotifier {
     _onPeople = false;
     _editingUser = false;
     _selectedUser = -1;
-    _currentUserId = -1;
   }
 
   void initializeApp() async {

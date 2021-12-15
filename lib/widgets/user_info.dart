@@ -2,6 +2,7 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
+import 'package:flutter_social/providers/people_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
 import 'package:flutter_social/utils/app_cache.dart';
 import 'package:flutter_social/widgets/follow_button.dart';
@@ -102,8 +103,11 @@ class _UserInfoState extends State<UserInfo> {
               if (_user.id != currentUserId)
                 FollowButton(
                   followed: _user,
-                  afterFollowCallback: () =>
-                      setState(() => _isFollowing = !_isFollowing),
+                  beforeRequestCallback: () {
+                    setState(() => _isFollowing = !_isFollowing);
+                    Provider.of<PeopleProvider>(context, listen: false)
+                        .clearList();
+                  },
                   isFollowing: _isFollowing,
                 ),
             ],

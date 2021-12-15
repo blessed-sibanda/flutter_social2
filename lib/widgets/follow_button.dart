@@ -7,11 +7,13 @@ class FollowButton extends StatelessWidget {
 
   final APIUser followed;
   final bool isFollowing;
-  final Function afterFollowCallback;
+
+  // beforeRequestCallback - to update ui faster without waiting for the http request to complete
+  final Function beforeRequestCallback;
   FollowButton({
     Key? key,
     required this.followed,
-    required this.afterFollowCallback,
+    required this.beforeRequestCallback,
     this.isFollowing = false,
   }) : super(key: key);
 
@@ -22,11 +24,6 @@ class FollowButton extends StatelessWidget {
       color: Theme.of(context).primaryColor,
       textColor: Colors.white,
       onPressed: () async {
-        isFollowing
-            ? await _usersService.unfollowUser(followed.id)
-            : await _usersService.followUser(followed.id);
-
-        afterFollowCallback.call();
         String innerText =
             isFollowing ? 'have unfollowed' : 'are now following';
         ScaffoldMessenger.of(context).showSnackBar(
@@ -35,6 +32,14 @@ class FollowButton extends StatelessWidget {
             duration: const Duration(milliseconds: 800),
           ),
         );
+
+        beforeRequestCallback.call();
+
+        if (isFollowing) {
+          await _usersService.unfollowUser(followed.id);
+        } else {
+          await _usersService.followUser(followed.id);
+        }
       },
       child: Text(isFollowing ? 'unfollow' : 'Follow'),
     );

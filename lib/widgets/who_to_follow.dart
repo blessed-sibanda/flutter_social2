@@ -5,6 +5,7 @@ import 'package:flutter_social/providers/people_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
 import 'package:flutter_social/widgets/follow_button.dart';
 import 'package:provider/provider.dart';
+import 'improved_scrolling_wrapper.dart';
 
 class WhoToFollow extends StatefulWidget {
   const WhoToFollow({Key? key}) : super(key: key);
@@ -20,14 +21,16 @@ class _WhoToFollowState extends State<WhoToFollow> {
   int _currentPage = 1;
   late int _totalPages;
   late int _perPage;
-  final _peopleProvider = PeopleProvider();
   bool _loading = true;
 
   void _getUsers() async {
     final response = await _usersService.getPeopleToFollow(page: _currentPage);
     final data = response.body!;
-    _peopleProvider.addPeopleToFollow(data.users);
+    Provider.of<PeopleProvider>(context, listen: false)
+        .addPeopleToFollow(data.users);
     setState(() => _loading = false);
+
+    print('get user called ${DateTime.now()}');
 
     data.links.nextPage != null ? _hasMore = true : _hasMore = false;
     _perPage = data.meta.perPage;
@@ -44,7 +47,9 @@ class _WhoToFollowState extends State<WhoToFollow> {
       final triggerFetchMore =
           0.85 * _scrollController.position.maxScrollExtent;
       if ((_scrollController.position.pixels > triggerFetchMore) && _hasMore) {
-        if (_peopleProvider.peopleToFollow.length <=
+        final peopleProvider =
+            Provider.of<PeopleProvider>(context, listen: false);
+        if (peopleProvider.peopleToFollow.length <=
                 (_perPage * (_currentPage + 1)) &&
             _currentPage < _totalPages) {
           _currentPage++;
@@ -65,33 +70,40 @@ class _WhoToFollowState extends State<WhoToFollow> {
     if (_loading == true) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      return ChangeNotifierProvider(
-        create: (_) => _peopleProvider,
-        child: Consumer<PeopleProvider>(
-          builder: (context, peopleProvider, child) {
-            return ListView.builder(
-              itemCount: peopleProvider.peopleToFollow.length,
-              controller: _scrollController,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                APIUser user = peopleProvider.peopleToFollow[index];
-                return InkWell(
-                  key: ValueKey(user.id),
-                  child: _buildUserTile(context, user),
-                  onTap: () => _goToUserProfile(user),
-                );
-              },
-            );
-          },
+      return Consumer<PeopleProvider>(
+        builder: (context, peopleProvider, child) => _buildPeopleList(
+          context,
+          peopleProvider,
         ),
       );
     }
   }
 
-  void _goToUserProfile(APIUser user) =>
-      Provider.of<AppProvider>(context, listen: false).goToProfile(user.id);
+  Widget _buildPeopleList(BuildContext context, PeopleProvider provider) {
+    return ImprovedScrollingWrapper(
+      scrollController: _scrollController,
+      child: ListView.builder(
+        itemCount: provider.peopleToFollow.length,
+        controller: _scrollController,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          APIUser user = provider.peopleToFollow[index];
+          return InkWell(
+            key: ValueKey(user.id),
+            child: _buildUserTile(context, user, provider),
+            onTap: () => Provider.of<AppProvider>(context, listen: false)
+                .goToProfile(user.id),
+          );
+        },
+      ),
+    );
+  }
 
-  Widget _buildUserTile(BuildContext context, APIUser user) {
+  Widget _buildUserTile(
+    BuildContext context,
+    APIUser user,
+    PeopleProvider provider,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: ListTile(
@@ -106,9 +118,9 @@ class _WhoToFollowState extends State<WhoToFollow> {
         ),
         trailing: FollowButton(
           followed: user,
-          afterFollowCallback: () {
-            _peopleProvider.removePerson(user);
-            if (_peopleProvider.peopleToFollow.length < _perPage) {
+          beforeRequestCallback: () {
+            provider.removePerson(user);
+            if (provider.peopleToFollow.length < _perPage) {
               if (_hasMore) {
                 _currentPage++;
                 _getUsers();

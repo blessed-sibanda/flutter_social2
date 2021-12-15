@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_social/providers/app_provider.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_social/providers/people_provider.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _appProvider = AppProvider();
+
   late AppRouter _appRouter;
   final routeParser = AppRouteParser();
 
@@ -41,9 +43,10 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => _appProvider),
+        ChangeNotifierProvider(create: (context) => PeopleProvider()),
       ],
       child: Consumer<AppProvider>(
-        builder: (context, appProvider, child) {
+        builder: (context, _, child) {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: 'Flutter Social',

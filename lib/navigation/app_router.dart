@@ -36,7 +36,9 @@ class AppRouter extends RouterDelegate<AppLink>
         if (!appProvider.isInitialized) SplashScreen.page,
         if (appProvider.isInitialized && !appProvider.isLoggedIn)
           AuthScreen.page,
-        if (appProvider.isInitialized && appProvider.isLoggedIn)
+        if (appProvider.isInitialized &&
+            appProvider.isLoggedIn &&
+            !appProvider.didSelectUser)
           HomeScreen.page,
         if (appProvider.isInitialized &&
             appProvider.isLoggedIn &&
