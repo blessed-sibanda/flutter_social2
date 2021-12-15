@@ -3,18 +3,50 @@ import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/providers/people_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
+import 'package:flutter_social/utils/screen_size.dart';
 import 'package:flutter_social/widgets/follow_button.dart';
+import 'package:flutter_social/utils/text_utils.dart';
+
 import 'package:provider/provider.dart';
 import 'improved_scrolling_wrapper.dart';
 
-class WhoToFollow extends StatefulWidget {
-  const WhoToFollow({Key? key}) : super(key: key);
+class WhoToFollowCard extends StatelessWidget {
+  const WhoToFollowCard({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<WhoToFollow> createState() => _WhoToFollowState();
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: SizedBox(
+        width: 450.0,
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(ScreenSize.isLarge(context) ? 10.0 : 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextUtils.cardHeaderText(context, 'Who To Follow'),
+                const SizedBox(height: 20.0),
+                const Expanded(child: WhoToFollowList()),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _WhoToFollowState extends State<WhoToFollow> {
+class WhoToFollowList extends StatefulWidget {
+  const WhoToFollowList({Key? key}) : super(key: key);
+
+  @override
+  State<WhoToFollowList> createState() => _WhoToFollowListState();
+}
+
+class _WhoToFollowListState extends State<WhoToFollowList> {
   final _usersService = UsersService.create();
   final ScrollController _scrollController = ScrollController();
   bool _hasMore = false;
@@ -71,23 +103,24 @@ class _WhoToFollowState extends State<WhoToFollow> {
   }
 
   Widget _buildPeopleList() {
-    final provider = Provider.of<PeopleProvider>(context, listen: false);
     return ImprovedScrollingWrapper(
       scrollController: _scrollController,
-      child: ListView.builder(
-        itemCount: provider.peopleToFollow.length,
-        controller: _scrollController,
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          APIUser user = provider.peopleToFollow[index];
-          return InkWell(
-            key: ValueKey(user.id),
-            child: _buildUserTile(user),
-            onTap: () => Provider.of<AppProvider>(context, listen: false)
-                .goToProfile(user.id),
-          );
-        },
-      ),
+      child: Consumer<PeopleProvider>(builder: (context, provider, child) {
+        return ListView.builder(
+          itemCount: provider.peopleToFollow.length,
+          controller: _scrollController,
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            APIUser user = provider.peopleToFollow[index];
+            return InkWell(
+              key: ValueKey(user.id),
+              child: _buildUserTile(user),
+              onTap: () => Provider.of<AppProvider>(context, listen: false)
+                  .goToProfile(user.id),
+            );
+          },
+        );
+      }),
     );
   }
 

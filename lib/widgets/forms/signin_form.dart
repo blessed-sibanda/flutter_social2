@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/auth.dart';
@@ -84,36 +83,39 @@ class _SignInFormState extends State<SignInForm> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextButton(
-                    child: greyText('Resend email confirmation', context),
-                    onPressed: () async {
-                      await _showEmailActionDialog(
-                        EmailAction.resendConfirmation,
-                        context,
-                      );
-                    },
+          SizedBox(
+            width: 450.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: TextButton(
+                      child: greyText('Resend email confirmation', context),
+                      onPressed: () async {
+                        await _showEmailActionDialog(
+                          EmailAction.resendConfirmation,
+                          context,
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: TextButton(
-                    child: greyText('Forgot Password?', context),
-                    onPressed: () async {
-                      await _showEmailActionDialog(
-                        EmailAction.resetPassword,
-                        context,
-                      );
-                    },
-                  ),
-                )
-              ],
+                  Expanded(
+                    flex: 2,
+                    child: TextButton(
+                      child: greyText('Forgot Password?', context),
+                      onPressed: () async {
+                        await _showEmailActionDialog(
+                          EmailAction.resetPassword,
+                          context,
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

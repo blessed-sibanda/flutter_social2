@@ -17,18 +17,18 @@ class ImprovedScrollingWrapper extends StatelessWidget {
       enableMMBScrolling: true,
       enableKeyboardScrolling: true,
       enableCustomMouseWheelScrolling: true,
-      keyboardScrollConfig: KeyboardScrollConfig(
-        arrowsScrollAmount: 250.0,
-        homeScrollDurationBuilder: (currentScrollOffset, minScrollOffset) {
-          return const Duration(milliseconds: 100);
-        },
-        endScrollDurationBuilder: (currentScrollOffset, maxScrollOffset) {
-          return const Duration(milliseconds: 2000);
-        },
-      ),
-      customMouseWheelScrollConfig: const CustomMouseWheelScrollConfig(
-        scrollAmountMultiplier: 2.0,
-      ),
+      // keyboardScrollConfig: KeyboardScrollConfig(
+      // arrowsScrollAmount: 250.0,
+      // homeScrollDurationBuilder: (currentScrollOffset, minScrollOffset) {
+      //   return const Duration(milliseconds: 100);
+      // },
+      // endScrollDurationBuilder: (currentScrollOffset, maxScrollOffset) {
+      //   return const Duration(milliseconds: 2000);
+      // },
+      // ),
+      // customMouseWheelScrollConfig: const CustomMouseWheelScrollConfig(
+      //   scrollAmountMultiplier: 2.0,
+      // ),
       child: child,
     );
   }

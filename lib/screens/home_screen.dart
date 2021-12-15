@@ -30,15 +30,9 @@ class HomeScreen extends StatelessWidget {
                 flex: 2,
               ),
               if (ScreenSize.isLarge(context))
-                Expanded(
+                const Expanded(
                   flex: 1,
-                  child: Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(
-                          ScreenSize.isLarge(context) ? 10.0 : 0.0),
-                      child: const WhoToFollow(),
-                    ),
-                  ),
+                  child: WhoToFollowCard(),
                 )
             ],
           ),
