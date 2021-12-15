@@ -26,11 +26,9 @@ class _WhoToFollowState extends State<WhoToFollow> {
   void _getUsers() async {
     final response = await _usersService.getPeopleToFollow(page: _currentPage);
     final data = response.body!;
-    Provider.of<PeopleProvider>(context, listen: false)
-        .addPeopleToFollow(data.users);
+    final provider = Provider.of<PeopleProvider>(context, listen: false);
+    provider.addPeopleToFollow(data.users);
     setState(() => _loading = false);
-
-    print('get user called ${DateTime.now()}');
 
     data.links.nextPage != null ? _hasMore = true : _hasMore = false;
     _perPage = data.meta.perPage;
@@ -47,10 +45,8 @@ class _WhoToFollowState extends State<WhoToFollow> {
       final triggerFetchMore =
           0.85 * _scrollController.position.maxScrollExtent;
       if ((_scrollController.position.pixels > triggerFetchMore) && _hasMore) {
-        final peopleProvider =
-            Provider.of<PeopleProvider>(context, listen: false);
-        if (peopleProvider.peopleToFollow.length <=
-                (_perPage * (_currentPage + 1)) &&
+        final provider = Provider.of<PeopleProvider>(context, listen: false);
+        if (provider.peopleToFollow.length <= (_perPage * (_currentPage + 1)) &&
             _currentPage < _totalPages) {
           _currentPage++;
           _getUsers();
@@ -70,16 +66,12 @@ class _WhoToFollowState extends State<WhoToFollow> {
     if (_loading == true) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      return Consumer<PeopleProvider>(
-        builder: (context, peopleProvider, child) => _buildPeopleList(
-          context,
-          peopleProvider,
-        ),
-      );
+      return _buildPeopleList();
     }
   }
 
-  Widget _buildPeopleList(BuildContext context, PeopleProvider provider) {
+  Widget _buildPeopleList() {
+    final provider = Provider.of<PeopleProvider>(context, listen: false);
     return ImprovedScrollingWrapper(
       scrollController: _scrollController,
       child: ListView.builder(
@@ -90,7 +82,7 @@ class _WhoToFollowState extends State<WhoToFollow> {
           APIUser user = provider.peopleToFollow[index];
           return InkWell(
             key: ValueKey(user.id),
-            child: _buildUserTile(context, user, provider),
+            child: _buildUserTile(user),
             onTap: () => Provider.of<AppProvider>(context, listen: false)
                 .goToProfile(user.id),
           );
@@ -99,11 +91,8 @@ class _WhoToFollowState extends State<WhoToFollow> {
     );
   }
 
-  Widget _buildUserTile(
-    BuildContext context,
-    APIUser user,
-    PeopleProvider provider,
-  ) {
+  Widget _buildUserTile(APIUser user) {
+    final provider = Provider.of<PeopleProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: ListTile(
