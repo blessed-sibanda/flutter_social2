@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_social/screens/home_screen.dart';
 import 'package:flutter_social/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 
 class MenuItems {
   static const people = 'People';
-  static const myProfile = 'My Profile';
+  static const myProfile = 'Profile';
   static const signOut = 'Sign Out';
 
   static List<String> get smallScreen => [people, myProfile, signOut];
@@ -25,81 +24,64 @@ class _FlutterSocialAppBarState extends State<FlutterSocialAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text('Flutter Social'),
-      automaticallyImplyLeading: false,
       actions: [
-        ScreenSize.isSmall(context)
-            ? IconButton(onPressed: _goToHomePage, icon: const Icon(Icons.home))
-            : InkWell(
-                child: _buildMenuButton(icon: Icons.home, label: 'Home'),
-                onTap: _goToHomePage,
-              ),
-        _buildDropdownMenu(),
+        if (!ScreenSize.isSmall(context))
+          InkWell(
+            child: _buildMenuButton(icon: Icons.home, label: 'Home'),
+            onTap: _goToHomePage,
+          ),
+        if (ScreenSize.isMedium(context))
+          InkWell(
+            child: _buildMenuButton(label: 'People'),
+            onTap: _goToPeople,
+          ),
+        if (!ScreenSize.isSmall(context))
+          InkWell(
+            child:
+                _buildMenuButton(icon: Icons.account_circle, label: 'Profile'),
+            onTap: _goToProfilePage,
+          ),
+        if (!ScreenSize.isSmall(context))
+          InkWell(
+            child: _buildMenuButton(icon: Icons.logout, label: 'Logout'),
+            onTap: _logout,
+          ),
       ],
     );
   }
 
-  PopupMenuButton<String> _buildDropdownMenu() {
-    var popUpMenuButton = ScreenSize.isSmall(context)
-        ? PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: _performAction,
-            itemBuilder: (_) => _buildMenuItems(MenuItems.smallScreen),
-          )
-        : PopupMenuButton<String>(
-            child:
-                _buildMenuButton(icon: Icons.account_circle, label: 'Account'),
-            onSelected: _performAction,
-            itemBuilder: (_) => _buildMenuItems(
-              ScreenSize.isLarge(context)
-                  ? MenuItems.bigScreen
-                  : MenuItems.smallScreen,
-            ),
-          );
-
-    return popUpMenuButton;
-  }
-
-  Center _buildMenuButton({required IconData icon, required String label}) {
+  Widget _buildMenuButton({required String label, IconData? icon}) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(width: 5.0),
-            Text(label),
-          ],
-        ),
+        padding: EdgeInsets.symmetric(
+            horizontal: ScreenSize.isLarge(context) ? 30.0 : 15.0),
+        child: (icon != null && ScreenSize.isLarge(context))
+            ? Row(
+                children: [
+                  Icon(icon),
+                  const SizedBox(width: 5.0),
+                  Text(label),
+                ],
+              )
+            : Text(label),
       ),
     );
   }
 
-  List<PopupMenuEntry<String>> _buildMenuItems(List<String> menuItems) {
-    return menuItems.map((item) {
-      return PopupMenuItem<String>(
-        value: item,
-        child: Text(item),
-      );
-    }).toList();
+  void _goToPeople() {
+    Provider.of<AppProvider>(context, listen: false).goToPeople();
   }
 
-  void _performAction(valueSelected) {
-    switch (valueSelected) {
-      case MenuItems.signOut:
-        Provider.of<AppProvider>(context, listen: false).logOut();
-        break;
-      case MenuItems.myProfile:
-        Navigator.pop(context);
-        Provider.of<AppProvider>(context, listen: false).goToProfile();
-        break;
-      case MenuItems.people:
-        Provider.of<AppProvider>(context, listen: false).goToPeople();
-        break;
-      default:
-    }
+  void _logout() {
+    Provider.of<AppProvider>(context, listen: false).logOut();
   }
 
   void _goToHomePage() {
     Provider.of<AppProvider>(context, listen: false).goToHome();
+  }
+
+  void _goToProfilePage() {
+    Navigator.pop(context);
+    Provider.of<AppProvider>(context, listen: false).goToProfile();
   }
 }

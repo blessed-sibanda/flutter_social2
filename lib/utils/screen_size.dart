@@ -6,8 +6,8 @@ class ScreenSize {
   static ScreenSizes _getSize(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    if (width <= 576) return ScreenSizes.small;
-    if (width > 576 && width <= 768) return ScreenSizes.medium;
+    if (width <= 600) return ScreenSizes.small;
+    if (width > 600 && width <= 900) return ScreenSizes.medium;
     return ScreenSizes.large;
   }
 
@@ -22,8 +22,8 @@ class ScreenSize {
 
   static EdgeInsets minPadding(BuildContext context) {
     return EdgeInsets.symmetric(
-      vertical: isLarge(context) ? 20.0 : 0.0,
-      horizontal: isLarge(context) ? 30.0 : 0.0,
+      vertical: !isSmall(context) ? 20.0 : 0.0,
+      horizontal: !isSmall(context) ? 30.0 : 0.0,
     );
   }
 }
