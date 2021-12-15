@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_social/models/auth.dart';
+import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/services/service_utils.dart';
 import 'package:flutter_social/utils/app_cache.dart';
-import 'package:http/http.dart' as http;
 
 part "auth_service.chopper.dart";
 
@@ -58,7 +58,8 @@ abstract class AuthService extends ChopperService {
     String token = response.headers['authorization'] ?? '';
     if (token.isNotEmpty) {
       _appCache.saveAuthToken(token);
-      _appCache.saveUserId(jsonDecode(response.body)['id']);
+      APIUser user = APIUser.fromJson(jsonDecode(response.body));
+      _appCache.saveCurrentUser(user);
     }
     return response;
   }
