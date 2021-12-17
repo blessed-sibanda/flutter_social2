@@ -2,55 +2,89 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
+import 'package:flutter_social/utils/app_cache.dart';
 import 'package:provider/provider.dart';
 import 'package:chopper/chopper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          FutureBuilder(
-            future: UsersService.create().getMyProfile(),
-            builder: (context, AsyncSnapshot<Response<APIUser>> snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else if (snapshot.hasData) {
-                final user = snapshot.data!.body!;
-                return UserAccountsDrawerHeader(
-                  accountName: Text(
-                    user.name,
-                    style: const TextStyle(color: Colors.black87),
-                  ),
-                  accountEmail: Text(
-                    user.email!,
-                    style: const TextStyle(color: Colors.black87),
-                  ),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image:
-                          (user.avatarUrl != null && user.avatarUrl!.isNotEmpty)
-                              ? NetworkImage(user.avatarUrl!) as ImageProvider
-                              : const AssetImage('assets/images/user.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox(
-                  height: 200.0,
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-            },
+          Stack(
+            children: const [
+              UserImage(),
+              Positioned(
+                child: UserName(),
+                bottom: 10.0,
+                right: 10.0,
+              ),
+            ],
           ),
           const MenuListTileWidget(),
         ],
       ),
+    );
+  }
+}
+
+class UserImage extends StatelessWidget {
+  const UserImage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: UsersService.create().getMyProfile(),
+      builder: (context, AsyncSnapshot<Response<APIUser>> snapshot) {
+        final defaultImage = Image.asset('assets/images/user.png');
+
+        if (snapshot.hasData) {
+          final user = snapshot.data!.body!;
+          if (user.avatarUrl != null) {
+            return CachedNetworkImage(
+              imageUrl: user.avatarUrl!,
+              fit: BoxFit.cover,
+              width: 304.0,
+              height: 250.0,
+            );
+          } else {
+            return defaultImage;
+          }
+        } else {
+          return defaultImage;
+        }
+      },
+    );
+  }
+}
+
+class UserName extends StatelessWidget {
+  const UserName({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: AppCache().currentUser,
+      builder: (context, AsyncSnapshot<APIUser> snapshot) {
+        final user = snapshot.data!;
+        return Text(
+          user.name,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: Theme.of(context).textTheme.headline5!.fontSize,
+          ),
+        );
+      },
     );
   }
 }
