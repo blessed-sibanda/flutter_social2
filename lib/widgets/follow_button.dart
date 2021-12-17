@@ -30,7 +30,7 @@ class FollowButton extends StatelessWidget {
 
         beforeRequestCallback.call();
 
-        await showPlatformToast(
+        await showStyledToast(
           child: Text('You $innerText ${followed.name}'),
           context: context,
         );
