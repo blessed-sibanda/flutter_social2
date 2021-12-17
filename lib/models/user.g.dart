@@ -11,6 +11,7 @@ APIUser _$APIUserFromJson(Map<String, dynamic> json) => APIUser(
       name: json['name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       email: json['email'] as String?,
+      unconfirmedEmail: json['unconfirmed_email'] as String?,
       avatarUrl: json['avatar_url'] as String?,
       about: json['about'] as String? ?? '',
     );
@@ -20,6 +21,7 @@ Map<String, dynamic> _$APIUserToJson(APIUser instance) => <String, dynamic>{
       'name': instance.name,
       'created_at': instance.createdAt.toIso8601String(),
       'email': instance.email,
+      'unconfirmed_email': instance.unconfirmedEmail,
       'about': instance.about,
       'avatar_url': instance.avatarUrl,
     };

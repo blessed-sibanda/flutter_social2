@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/models/user.dart';

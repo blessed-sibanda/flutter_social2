@@ -14,6 +14,9 @@ class APIUser {
 
   String? email;
 
+  @JsonKey(name: 'unconfirmed_email')
+  String? unconfirmedEmail;
+
   String about;
 
   @JsonKey(name: 'avatar_url')
@@ -24,6 +27,7 @@ class APIUser {
     required this.name,
     required this.createdAt,
     this.email,
+    this.unconfirmedEmail,
     this.avatarUrl,
     this.about = '',
   });
