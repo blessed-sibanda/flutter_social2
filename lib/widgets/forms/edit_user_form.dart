@@ -6,6 +6,7 @@ import 'package:flutter_social/models/auth.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/providers/current_password_provider.dart';
+import 'package:flutter_social/providers/email_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
 import 'package:flutter_social/utils/text_utils.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,9 +32,31 @@ class _EditUserFormState extends State<EditUserForm> {
   final _aboutController = TextEditingController();
   final _usersService = UsersService.create();
   final _currentPasswordProvider = CurrentPasswordProvider();
+  final _emailProvider = EmailProvider();
   final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
   PickedFile? _image;
   String _error = '';
+  bool _loading = true;
+  late APIUser _user;
+
+  void _loadUserData() async {
+    final response = await _usersService.getMyProfile();
+    final user = response.body!;
+    setState(() {
+      _nameController.text = user.name;
+      _emailController.text = user.email!;
+      _aboutController.text = user.about;
+      _currentPasswordController.text = '';
+      _user = user;
+      _loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   @override
   void dispose() {
@@ -54,64 +77,65 @@ class _EditUserFormState extends State<EditUserForm> {
   }
 
   Widget _buildForm(BuildContext context) {
-    return FutureBuilder(
-      future: _usersService.getMyProfile(),
-      builder: (context, AsyncSnapshot<Response<APIUser>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final user = snapshot.data!.body!;
-        _nameController.text = user.name;
-        _emailController.text = user.email!;
-        _aboutController.text = user.about;
-        _currentPasswordController.text = '';
-        return FormWrapper(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextUtils.cardHeaderText(context, 'Edit Profile'),
-              const Divider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildUserAvatarImage(user),
-                  const SizedBox(height: 5.0),
-                  _buildUploadIconButtons(context)
-                ],
-              ),
-              if (_error.isNotEmpty)
-                Text(_error, style: const TextStyle(color: Colors.red)),
-              TextInputField(label: 'Name', controller: _nameController),
-              TextInputField(
-                label: 'About',
-                controller: _aboutController,
-                multiLine: true,
-                validator: (_) {},
-              ),
-              EmailInputField(emailController: _emailController),
-              ChangeNotifierProvider(
-                create: (_) => _currentPasswordProvider,
-                child: Consumer<CurrentPasswordProvider>(
-                    builder: (context, _, child) {
-                  return PasswordInputField(
-                    controller: _currentPasswordController,
-                    currentPasswordValidation: true,
-                    label: 'Current Password',
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return FormWrapper(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextUtils.cardHeaderText(context, 'Edit Profile'),
+            const Divider(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildUserAvatarImage(_user),
+                const SizedBox(height: 5.0),
+                _buildUploadIconButtons(context)
+              ],
+            ),
+            if (_error.isNotEmpty)
+              Text(_error, style: const TextStyle(color: Colors.red)),
+            TextInputField(label: 'Name', controller: _nameController),
+            TextInputField(
+              label: 'About',
+              controller: _aboutController,
+              multiLine: true,
+              validator: (_) {},
+            ),
+            ChangeNotifierProvider(
+              create: (_) => _emailProvider,
+              child: Consumer<EmailProvider>(
+                builder: (context, _, child) {
+                  return EmailInputField(
+                    emailController: _emailController,
+                    emailValidation: true,
                   );
-                }),
+                },
               ),
-              PasswordInputField(
-                label: 'Password',
-                controller: _passwordController,
-                allowBlank: true,
-              ),
-              const SizedBox(height: 20.0),
-              _buildFormActionButtons(context),
-            ],
-          ),
-        );
-      },
-    );
+            ),
+            ChangeNotifierProvider(
+              create: (_) => _currentPasswordProvider,
+              child: Consumer<CurrentPasswordProvider>(
+                  builder: (context, _, child) {
+                return PasswordInputField(
+                  controller: _currentPasswordController,
+                  currentPasswordValidation: true,
+                  label: 'Current Password',
+                );
+              }),
+            ),
+            PasswordInputField(
+              label: 'Password',
+              controller: _passwordController,
+              allowBlank: true,
+            ),
+            const SizedBox(height: 20.0),
+            _buildFormActionButtons(context),
+          ],
+        ),
+      );
+    }
   }
 
   Row _buildFormActionButtons(BuildContext context) {
@@ -124,10 +148,14 @@ class _EditUserFormState extends State<EditUserForm> {
               Provider.of<AppProvider>(context, listen: false).goToProfile(),
         ),
         const SizedBox(width: 20.0),
-        ChangeNotifierProvider(
-          create: (_) => _currentPasswordProvider,
-          child: Consumer<CurrentPasswordProvider>(
-            builder: (context, _, snapshot) {
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (context) => _currentPasswordProvider),
+            ChangeNotifierProvider(create: (context) => _emailProvider),
+          ],
+          child: Consumer2<CurrentPasswordProvider, EmailProvider>(
+            builder: (context, _, __, snapshot) {
               return ElevatedButton(
                 child: const Text('Update User'),
                 onPressed: _updateUser,
@@ -188,6 +216,7 @@ class _EditUserFormState extends State<EditUserForm> {
 
   void _updateUser() async {
     _currentPasswordProvider.validate();
+    _emailProvider.validate();
     if ((_formStateKey.currentState != null) &&
         (_formStateKey.currentState!.validate())) {
       final data = UpdateUserData(
@@ -207,8 +236,14 @@ class _EditUserFormState extends State<EditUserForm> {
       } else {
         final errorString = await response.stream.bytesToString();
         Map<String, dynamic> errors = jsonDecode(errorString)['errors'];
-        if (errors.containsKey('current_password')) {
-          _currentPasswordProvider.invalidate();
+        if (errors.containsKey('current_password') ||
+            errors.containsKey('email')) {
+          if (errors.containsKey('current_password')) {
+            _currentPasswordProvider.invalidate();
+          }
+          if (errors.containsKey('email')) {
+            _emailProvider.invalidate();
+          }
         } else {
           setState(() => _error = errorString);
         }

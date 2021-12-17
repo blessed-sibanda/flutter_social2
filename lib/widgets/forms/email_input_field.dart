@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_social/providers/email_provider.dart';
+import 'package:provider/provider.dart';
 import 'form_validators.dart';
 
 class EmailInputField extends StatelessWidget {
+  final bool emailValidation;
   final String? helperText;
   const EmailInputField({
     Key? key,
     required TextEditingController emailController,
+    this.emailValidation = false,
     this.helperText,
   })  : _emailController = emailController,
         super(key: key);
@@ -23,7 +27,10 @@ class EmailInputField extends StatelessWidget {
         labelText: 'Email',
         helperText: helperText,
       ),
-      validator: (value) => FormValidators.userEmailField(value),
+      validator: (value) => emailValidation &&
+              Provider.of<EmailProvider>(context, listen: false).isInvalid()
+          ? 'Email has already been taken'
+          : FormValidators.userEmailField(value),
     );
   }
 }

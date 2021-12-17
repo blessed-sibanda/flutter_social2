@@ -6,7 +6,6 @@ import 'package:flutter_social/services/users_service.dart';
 import 'package:flutter_social/utils/screen_size.dart';
 import 'package:flutter_social/widgets/follow_button.dart';
 import 'package:flutter_social/utils/text_utils.dart';
-import 'package:flutter_social/widgets/forms/text_input_field.dart';
 
 import 'package:provider/provider.dart';
 import 'improved_scrolling_wrapper.dart';
@@ -28,8 +27,6 @@ class WhoToFollowCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextInputField(
-                    label: 'Test Field', controller: TextEditingController()),
                 TextUtils.cardHeaderText(context, 'Who To Follow'),
                 const SizedBox(height: 20.0),
                 const Expanded(child: WhoToFollowList()),
