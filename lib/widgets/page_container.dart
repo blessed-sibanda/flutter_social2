@@ -5,11 +5,12 @@ import 'package:flutter_social/widgets/flutter_social_appbar.dart';
 
 class PageContainer extends StatelessWidget {
   final Widget child;
-  const PageContainer(this.child, {Key? key}) : super(key: key);
+  PageContainer(this.child, {Key? key}) : super(key: key);
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(

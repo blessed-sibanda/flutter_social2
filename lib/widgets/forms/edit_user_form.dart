@@ -49,14 +49,7 @@ class _EditUserFormState extends State<EditUserForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formStateKey,
-      child: ChangeNotifierProvider(
-        create: (_) => _currentPasswordProvider,
-        child: Consumer<CurrentPasswordProvider>(
-          builder: (context, _, __) {
-            return _buildForm(context);
-          },
-        ),
-      ),
+      child: _buildForm(context),
     );
   }
 
@@ -96,10 +89,16 @@ class _EditUserFormState extends State<EditUserForm> {
                 validator: (_) {},
               ),
               EmailInputField(emailController: _emailController),
-              PasswordInputField(
-                controller: _currentPasswordController,
-                currentPasswordValidation: true,
-                label: 'Current Password',
+              ChangeNotifierProvider(
+                create: (_) => _currentPasswordProvider,
+                child: Consumer<CurrentPasswordProvider>(
+                    builder: (context, _, child) {
+                  return PasswordInputField(
+                    controller: _currentPasswordController,
+                    currentPasswordValidation: true,
+                    label: 'Current Password',
+                  );
+                }),
               ),
               PasswordInputField(
                 label: 'Password',
@@ -125,9 +124,16 @@ class _EditUserFormState extends State<EditUserForm> {
               Provider.of<AppProvider>(context, listen: false).goToProfile(),
         ),
         const SizedBox(width: 20.0),
-        ElevatedButton(
-          child: const Text('Update User'),
-          onPressed: _updateUser,
+        ChangeNotifierProvider(
+          create: (_) => _currentPasswordProvider,
+          child: Consumer<CurrentPasswordProvider>(
+            builder: (context, _, snapshot) {
+              return ElevatedButton(
+                child: const Text('Update User'),
+                onPressed: _updateUser,
+              );
+            },
+          ),
         ),
       ],
     );
@@ -196,9 +202,7 @@ class _EditUserFormState extends State<EditUserForm> {
       final response = await _usersService.updateUser(data, _imagePath);
 
       if (response.statusCode == 204) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User details updated successfully!')),
-        );
+        Navigator.pop(context);
         Provider.of<AppProvider>(context, listen: false).goToProfile();
       } else {
         final errorString = await response.stream.bytesToString();

@@ -6,10 +6,10 @@ import 'package:flutter_social/widgets/page_container.dart';
 class EditUserScreen extends StatelessWidget {
   const EditUserScreen({Key? key}) : super(key: key);
 
-  static get page => const MaterialPage(
-        child: PageContainer(EditUserScreen()),
+  static get page => MaterialPage(
+        child: PageContainer(const EditUserScreen()),
         name: AppPaths.userEditPath,
-        key: ValueKey(AppPaths.userEditPath),
+        key: const ValueKey(AppPaths.userEditPath),
       );
 
   @override

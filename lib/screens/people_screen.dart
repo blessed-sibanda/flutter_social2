@@ -6,10 +6,10 @@ import 'package:flutter_social/widgets/who_to_follow.dart';
 class PeopleScreen extends StatelessWidget {
   const PeopleScreen({Key? key}) : super(key: key);
 
-  static get page => const MaterialPage(
-        child: PageContainer(PeopleScreen()),
+  static get page => MaterialPage(
+        child: PageContainer(const PeopleScreen()),
         name: AppPaths.userPath,
-        key: ValueKey(AppPaths.userPath),
+        key: const ValueKey(AppPaths.userPath),
       );
 
   @override
