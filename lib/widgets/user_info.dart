@@ -140,14 +140,7 @@ Widget _buildConfirmDeleteDialog(BuildContext context) {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.close, size: 20.0),
-            SizedBox(width: 10.0),
-            Text('No'),
-          ],
-        ),
+        child: const Text('No'),
         color: Theme.of(context).primaryColor,
         textColor: Colors.white,
       ),
@@ -156,14 +149,7 @@ Widget _buildConfirmDeleteDialog(BuildContext context) {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.check, size: 20.0),
-            SizedBox(width: 10.0),
-            Text('Yes'),
-          ],
-        ),
+        child: const Text('Yes'),
         color: Colors.red,
         textColor: Colors.white,
       ),

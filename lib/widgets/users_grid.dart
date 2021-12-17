@@ -74,6 +74,7 @@ class _UsersGridState extends State<UsersGrid> {
               scrollController: _scrollController,
               child: GridView.builder(
                 controller: _scrollController,
+                physics: const ClampingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: numColumns,
                 ),

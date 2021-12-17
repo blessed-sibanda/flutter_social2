@@ -17,6 +17,7 @@ class _FlutterSocialAppBarState extends State<FlutterSocialAppBar> {
     return AppBar(
       title: const Text('Flutter Social'),
       automaticallyImplyLeading: false,
+      elevation: 0.0,
       actions: [
         if (ScreenSize.isSmall(context))
           IconButton(onPressed: _openDrawer, icon: const Icon(Icons.menu)),
