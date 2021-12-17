@@ -230,7 +230,6 @@ class _EditUserFormState extends State<EditUserForm> {
       final response = await _usersService.updateUser(data, _imagePath);
 
       if (response.statusCode == 204) {
-        Navigator.pop(context);
         Provider.of<AppProvider>(context, listen: false).goToProfile();
       } else {
         final errorString = await response.stream.bytesToString();

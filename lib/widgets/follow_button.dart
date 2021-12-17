@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/services/users_service.dart';
+import 'package:fl_toast/fl_toast.dart';
 
 class FollowButton extends StatelessWidget {
   final _usersService = UsersService.create();
@@ -26,14 +27,13 @@ class FollowButton extends StatelessWidget {
       onPressed: () async {
         String innerText =
             isFollowing ? 'have unfollowed' : 'are now following';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('You $innerText ${followed.name}'),
-            duration: const Duration(milliseconds: 800),
-          ),
-        );
 
         beforeRequestCallback.call();
+
+        await showPlatformToast(
+          child: Text('You $innerText ${followed.name}'),
+          context: context,
+        );
 
         if (isFollowing) {
           await _usersService.unfollowUser(followed.id);
