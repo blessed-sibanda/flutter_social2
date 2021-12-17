@@ -114,19 +114,6 @@ class _UserInfoState extends State<UserInfo> {
             ],
           ),
         ),
-        if (_user.unconfirmedEmail != null && _user.id == currentUserId)
-          Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 10.0),
-                Text(
-                  '${_user.unconfirmedEmail!} (unconfirmed email)',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black45),
-                ),
-              ],
-            ),
-          ),
         const Divider(height: 15.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
