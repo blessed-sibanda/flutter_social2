@@ -4,12 +4,12 @@ import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/providers/people_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
-import 'package:flutter_social/utils/app_cache.dart';
 import 'package:flutter_social/widgets/follow_button.dart';
 import 'package:provider/provider.dart';
 
 class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
+  final int userId;
+  const UserInfo(this.userId, {Key? key}) : super(key: key);
 
   @override
   _UserInfoState createState() => _UserInfoState();
@@ -22,10 +22,10 @@ class _UserInfoState extends State<UserInfo> {
 
   void _setIsFollowing() {
     final appProvider = Provider.of<AppProvider>(context, listen: false);
-    final userId = appProvider.selectedUserId;
+
     final currentUserId = appProvider.currentUserId;
-    if (currentUserId != userId) {
-      _usersService.isFollowing(userId).then((response) {
+    if (currentUserId != widget.userId) {
+      _usersService.isFollowing(widget.userId).then((response) {
         setState(() => _isFollowing = response.body!);
       });
     }

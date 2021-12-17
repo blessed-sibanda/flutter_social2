@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/services/users_service.dart';
-import 'package:flutter_social/utils/app_cache.dart';
 import 'package:provider/provider.dart';
 import 'package:chopper/chopper.dart';
 

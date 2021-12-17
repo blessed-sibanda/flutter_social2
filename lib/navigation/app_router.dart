@@ -43,8 +43,15 @@ class AppRouter extends RouterDelegate<AppLink>
         if (appProvider.isInitialized &&
             appProvider.isLoggedIn &&
             appProvider.didSelectUser &&
+            appProvider.selectedUserId == appProvider.currentUserId &&
             !appProvider.editingUser)
-          UserProfileScreen.page,
+          UserProfileScreen.page(appProvider.currentUserId),
+        if (appProvider.isInitialized &&
+            appProvider.isLoggedIn &&
+            appProvider.didSelectUser &&
+            appProvider.selectedUserId != appProvider.currentUserId &&
+            !appProvider.editingUser)
+          UserProfileScreen.page(appProvider.selectedUserId),
         if (appProvider.isInitialized &&
             appProvider.isLoggedIn &&
             appProvider.editingUser)

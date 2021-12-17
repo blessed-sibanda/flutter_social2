@@ -1,17 +1,20 @@
+import 'package:flutter_social/providers/app_provider.dart';
 import 'package:flutter_social/widgets/page_container.dart';
 import 'package:flutter_social/widgets/users_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/utils/text_utils.dart';
 import 'package:flutter_social/widgets/user_info.dart';
 import 'package:flutter_social/navigation/app_paths.dart';
+import 'package:provider/provider.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  final int userId;
+  const UserProfileScreen(this.userId, {Key? key}) : super(key: key);
 
-  static get page => const MaterialPage(
-        child: PageContainer(UserProfileScreen()),
+  static page(int userId) => MaterialPage(
+        child: PageContainer(UserProfileScreen(userId)),
         name: AppPaths.userPath,
-        key: ValueKey(AppPaths.userPath),
+        key: const ValueKey(AppPaths.userPath),
       );
 
   @override
@@ -50,7 +53,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   children: [
                     TextUtils.cardHeaderText(context, 'Profile'),
                     const SizedBox(height: 15.0),
-                    const UserInfo(),
+                    UserInfo(widget.userId),
                     const SizedBox(height: 15.0),
                   ],
                 ),
