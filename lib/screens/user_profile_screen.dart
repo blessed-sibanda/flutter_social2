@@ -24,8 +24,14 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   @override
   void initState() {
-    tb = TabController(initialIndex: 0, length: 3, vsync: this);
     super.initState();
+    tb = TabController(initialIndex: 0, length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tb.dispose();
+    super.dispose();
   }
 
   @override

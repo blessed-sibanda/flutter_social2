@@ -37,11 +37,11 @@ class _EditUserFormState extends State<EditUserForm> {
 
   @override
   void dispose() {
-    // _nameController.dispose();
-    // _emailController.dispose();
-    // _passwordController.dispose();
-    // _aboutController.dispose();
-    // _currentPasswordController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _aboutController.dispose();
+    _currentPasswordController.dispose();
     super.dispose();
   }
 
@@ -51,65 +51,68 @@ class _EditUserFormState extends State<EditUserForm> {
       key: _formStateKey,
       child: ChangeNotifierProvider(
         create: (_) => _currentPasswordProvider,
-        child: Consumer<CurrentPasswordProvider>(builder: (context, _, __) {
-          return _buildForm(context);
-        }),
+        child: Consumer<CurrentPasswordProvider>(
+          builder: (context, _, __) {
+            return _buildForm(context);
+          },
+        ),
       ),
     );
   }
 
   Widget _buildForm(BuildContext context) {
     return FutureBuilder(
-        future: _usersService.getMyProfile(),
-        builder: (context, AsyncSnapshot<Response<APIUser>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final user = snapshot.data!.body!;
-          _nameController.text = user.name;
-          _emailController.text = user.email!;
-          _aboutController.text = user.about;
-          _currentPasswordController.text = '';
-          return FormWrapper(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextUtils.cardHeaderText(context, 'Edit Profile'),
-                const Divider(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildUserAvatarImage(user),
-                    const SizedBox(height: 5.0),
-                    _buildUploadIconButtons(context)
-                  ],
-                ),
-                if (_error.isNotEmpty)
-                  Text(_error, style: const TextStyle(color: Colors.red)),
-                TextInputField(label: 'Name', controller: _nameController),
-                TextInputField(
-                  label: 'About',
-                  controller: _aboutController,
-                  multiLine: true,
-                  validator: (_) {},
-                ),
-                EmailInputField(emailController: _emailController),
-                PasswordInputField(
-                  controller: _currentPasswordController,
-                  currentPasswordValidation: true,
-                  label: 'Current Password',
-                ),
-                PasswordInputField(
-                  label: 'Password',
-                  controller: _passwordController,
-                  allowBlank: true,
-                ),
-                const SizedBox(height: 20.0),
-                _buildFormActionButtons(context),
-              ],
-            ),
-          );
-        });
+      future: _usersService.getMyProfile(),
+      builder: (context, AsyncSnapshot<Response<APIUser>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final user = snapshot.data!.body!;
+        _nameController.text = user.name;
+        _emailController.text = user.email!;
+        _aboutController.text = user.about;
+        _currentPasswordController.text = '';
+        return FormWrapper(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextUtils.cardHeaderText(context, 'Edit Profile'),
+              const Divider(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildUserAvatarImage(user),
+                  const SizedBox(height: 5.0),
+                  _buildUploadIconButtons(context)
+                ],
+              ),
+              if (_error.isNotEmpty)
+                Text(_error, style: const TextStyle(color: Colors.red)),
+              TextInputField(label: 'Name', controller: _nameController),
+              TextInputField(
+                label: 'About',
+                controller: _aboutController,
+                multiLine: true,
+                validator: (_) {},
+              ),
+              EmailInputField(emailController: _emailController),
+              PasswordInputField(
+                controller: _currentPasswordController,
+                currentPasswordValidation: true,
+                label: 'Current Password',
+              ),
+              PasswordInputField(
+                label: 'Password',
+                controller: _passwordController,
+                allowBlank: true,
+              ),
+              const SizedBox(height: 20.0),
+              _buildFormActionButtons(context),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Row _buildFormActionButtons(BuildContext context) {
