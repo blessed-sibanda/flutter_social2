@@ -28,8 +28,6 @@ class FollowButton extends StatelessWidget {
         String innerText =
             isFollowing ? 'have unfollowed' : 'are now following';
 
-        beforeRequestCallback.call();
-
         await showStyledToast(
           child: Text('You $innerText ${followed.name}'),
           context: context,
@@ -40,6 +38,8 @@ class FollowButton extends StatelessWidget {
         } else {
           await _usersService.followUser(followed.id);
         }
+
+        beforeRequestCallback.call();
       },
       child: Text(isFollowing ? 'unfollow' : 'Follow'),
     );

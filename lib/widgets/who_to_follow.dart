@@ -88,6 +88,12 @@ class _WhoToFollowListState extends State<WhoToFollowList> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getUsers();
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();

@@ -32,6 +32,9 @@ class APIUser {
     this.about = '',
   });
 
+  @override
+  bool operator ==(u) => u is APIUser && u.id == id;
+
   factory APIUser.fromJson(Map<String, dynamic> json) =>
       _$APIUserFromJson(json);
 
